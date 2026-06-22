@@ -1,3 +1,5 @@
+//main.rs
+
 //mod types;
 mod todo_mgr;
 mod commands;
@@ -10,7 +12,7 @@ use inquire::{ Text };
 //use todo_mgr;
 
 fn main() {
-    let mut mgr = TodoMgr::new();
+    let mut mgr = TodoMgr::load();
 
     loop{
         let command = Command::select("").prompt().unwrap();
@@ -44,7 +46,6 @@ fn main() {
                 println!("  id  |       title        | state");
                 println!("------------------------------------");
                 for todo in mgr.get_todo(){
-                    if todo.id == 0 {continue;}
                     println!("{:0>6}|{:<20}|{}", 
                         todo.id, todo.title, 
                         if todo.done {"complete"} else {"pending"}
@@ -52,7 +53,10 @@ fn main() {
                 }
                 println!("------------------------------------");
             },
-            Command::Exit => break,
+            Command::Exit => {
+                mgr.save();
+                break;
+            },
         }
     }
 
